@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resultserver-deployment
+  labels:
+    app: resultserver
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: resultserver
+  template:
+    metadata:
+      labels:
+        app: resultserver
+    spec:
+      containers:
+      - name: resultserver-container
+        image: fatihcckr/resultserver
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: servers-configmap      
+        ports:
+        - containerPort: 80
